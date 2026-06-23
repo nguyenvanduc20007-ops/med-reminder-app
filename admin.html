@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>MedReminder - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-4 mb-5">
+        <h2 class="text-danger text-center mb-4 fw-bold">⚙️ Bảng Điều Khiển Hệ Thống</h2>
+        <div class="text-end mb-3">
+            <a href="index.html" class="btn btn-secondary">⬅️ Trở về Trang Khách</a>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm p-4 mb-4 bg-white">
+                    <h5 class="text-primary mb-3">Thêm/Sửa Lịch Thuốc</h5>
+                    <form id="formNhap">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label>Tên Bệnh Nhân</label>
+                                <input type="text" id="nhapBenhNhan" class="form-control">
+                                <small id="loiBN" class="text-danger" style="display: none;">Không được rỗng!</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Tên Thuốc</label>
+                                <input type="text" id="nhapThuoc" class="form-control">
+                                <small id="loiThuoc" class="text-danger" style="display: none;">Không được rỗng!</small>
+                            </div>
+                            <div class="col-md-4 mt-2">
+                                <label>Ngày Uống</label>
+                                <input type="date" id="nhapNgay" class="form-control">
+                                <small id="loiNgay" class="text-danger" style="display: none;">Chọn ngày!</small>
+                            </div>
+                            <div class="col-md-4 mt-2">
+                                <label>Giờ Uống</label>
+                                <input type="time" id="nhapGio" class="form-control">
+                                <small id="loiGio" class="text-danger" style="display: none;">Chọn giờ!</small>
+                            </div>
+                            <div class="col-md-4 mt-2">
+                                <label>Số lượng/Liều dùng</label>
+                                <input type="number" id="nhapLieu" class="form-control">
+                                <small id="loiLieu" class="text-danger" style="display: none;">Phải lớn hơn 0!</small>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <label>Link ảnh (http...)</label>
+                                <input type="text" id="nhapAnh" class="form-control">
+                                <small id="loiAnh" class="text-danger" style="display: none;">Link không hợp lệ!</small>
+                            </div>
+                            <div class="col-12 mt-3 text-end">
+                                <button type="submit" id="btnLuu" class="btn btn-primary px-4">Lưu Lịch Thuốc</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <table class="table table-bordered bg-white text-center align-middle shadow-sm">
+                    <thead class="table-dark">
+                        <tr><th>Bệnh Nhân</th><th>Thuốc</th><th>Ngày / Giờ</th><th>Thao tác</th></tr>
+                    </thead>
+                    <tbody id="bangLich">
+                        <tr><td colspan="4">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white fw-bold">👥 Danh Sách Bệnh Nhân</div>
+                    <ul class="list-group list-group-flush" id="dsBenhNhan"></ul>
+                </div>
+                
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white fw-bold">💊 Kho Thuốc </div>
+                    <ul class="list-group list-group-flush" id="dsKhoThuoc"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Có 2 resource đáp ứng yêu cầu
+        const API_LICH = "https://6a38f81f64a2d8269223305f.mockapi.io/schedules";
+        const API_THUOC = "https://6a38f81f64a2d8269223305f.mockapi.io/medications"; 
+        let idSua = null;
+
+        // Yêu cầu 1: Hàm return (Hàm 3) - Kiểm tra lỗi
+        function kiemTraRong(chuoi) {
+            if (chuoi === "") return true;
+            return false;
+        }
+
+        function loadAdmin() {
+            // Tải API Lịch Uống
+            fetch(API_LICH)
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    let html = "";
+                    let mangBN = []; // Mảng để lưu tên bệnh nhân không trùng
+
+                    for(let i = 0; i < data.length; i++) {
+                        let item = data[i];
+                        
+                        // Lọc danh sách bệnh nhân
+                        if (item.patientName !== "" && mangBN.includes(item.patientName) === false) {
+                            mangBN.push(item.patientName);
+                        }
+
+                        html += `
+                        <tr>
+                            <td class="fw-bold">${item.patientName}</td>
+                            <td class="text-primary">${item.medicationName}</td>
+                            <td>${item.date} <br> <small class="text-danger">${item.time}</small></td>
+                            <td>
+                                <button class="btn btn-sm btn-warning nut-sua" data-id="${item.id}" data-bn="${item.patientName}" data-thuoc="${item.medicationName}" data-ngay="${item.date}" data-gio="${item.time}" data-lieu="${item.dosage}" data-anh="${item.image}">Sửa</button>
+                                <button class="btn btn-sm btn-danger nut-xoa" data-id="${item.id}">Xóa</button>
+                            </td>
+                        </tr>`;
+                    }
+                    document.getElementById("bangLich").innerHTML = html;
+
+                    // In danh sách bệnh nhân ra màn hình
+                    let htmlBN = "";
+                    for (let j = 0; j < mangBN.length; j++) {
+                        htmlBN += `<li class="list-group-item">👤 ${mangBN[j]}</li>`;
+                    }
+                    document.getElementById("dsBenhNhan").innerHTML = htmlBN;
+                });
+
+            // Tải API Kho Thuốc (Resource 2)
+            fetch(API_THUOC)
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    let htmlThuoc = "";
+                    for(let k = 0; k < data.length; k++) {
+                        htmlThuoc += `<li class="list-group-item">💊 ${data[k].name}</li>`;
+                    }
+                    document.getElementById("dsKhoThuoc").innerHTML = htmlThuoc;
+                });
+        }
+
+        // Yêu cầu 1: Bắt sự kiện form bằng JS Thuần
+        document.getElementById("formNhap").addEventListener("submit", function(e) {
+            e.preventDefault(); // Chặn tải lại trang
+            
+            let bn = document.getElementById("nhapBenhNhan").value;
+            let thuoc = document.getElementById("nhapThuoc").value;
+            let ngay = document.getElementById("nhapNgay").value;
+            let gio = document.getElementById("nhapGio").value;
+            let lieu = document.getElementById("nhapLieu").value;
+            let anh = document.getElementById("nhapAnh").value;
+            
+            let hopLe = true;
+            $("small").hide(); // Ẩn hết lỗi đi để check lại
+
+            // Yêu cầu 3: Bắt lỗi Validation (Dùng jQuery slideDown để hiện lỗi)
+            if (kiemTraRong(bn)) { $("#loiBN").slideDown(); hopLe = false; }
+            if (kiemTraRong(thuoc)) { $("#loiThuoc").slideDown(); hopLe = false; }
+            if (kiemTraRong(ngay)) { $("#loiNgay").slideDown(); hopLe = false; }
+            if (kiemTraRong(gio)) { $("#loiGio").slideDown(); hopLe = false; }
+            if (Number(lieu) <= 0 || kiemTraRong(lieu)) { $("#loiLieu").slideDown(); hopLe = false; }
+            if (anh !== "" && anh.indexOf("http") !== 0) { $("#loiAnh").slideDown(); hopLe = false; }
+
+            if (hopLe === false) return; // Nếu có lỗi thì dừng lại
+
+            let duLieuLuu = {
+                patientName: bn,
+                medicationName: thuoc,
+                date: ngay,
+                time: gio,
+                dosage: Number(lieu),
+                image: anh,
+                isTaken: false
+            };
+
+            let kieuGoi = "POST";
+            let linkGoi = API_LICH;
+
+            // Nếu đang sửa thì đổi sang PUT
+            if (idSua !== null) {
+                kieuGoi = "PUT";
+                linkGoi = API_LICH + "/" + idSua;
+            }
+
+            fetch(linkGoi, {
+                method: kieuGoi,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(duLieuLuu)
+            })
+            .then(function() {
+                alert("Lưu dữ liệu thành công!");
+                document.getElementById("formNhap").reset(); // Yêu cầu 3: Reset form sau khi lưu
+                document.getElementById("btnLuu").innerText = "Lưu Lịch Thuốc";
+                idSua = null;
+                loadAdmin();
+            });
+        });
+
+        // Bấm nút Sửa
+        $(document).on("click", ".nut-sua", function() {
+            idSua = $(this).attr("data-id");
+            $("#nhapBenhNhan").val($(this).attr("data-bn"));
+            $("#nhapThuoc").val($(this).attr("data-thuoc"));
+            $("#nhapNgay").val($(this).attr("data-ngay"));
+            $("#nhapGio").val($(this).attr("data-gio"));
+            $("#nhapLieu").val($(this).attr("data-lieu"));
+            $("#nhapAnh").val($(this).attr("data-anh"));
+            $("#btnLuu").text("Cập nhật");
+        });
+
+        // Yêu cầu 4: Dùng jQuery $.ajax để Xóa
+        $(document).on("click", ".nut-xoa", function() {
+            let idMuonXoa = $(this).attr("data-id");
+            
+            if (confirm("Chắc chắn xóa lịch này chứ?")) {
+                $.ajax({
+                    url: API_LICH + "/" + idMuonXoa,
+                    type: "DELETE",
+                    success: function() {
+                        loadAdmin();
+                    }
+                });
+            }
+        });
+
+        // Chạy khi mở web
+        document.addEventListener("DOMContentLoaded", function() {
+            // Đặt ô ngày mặc định là hôm nay
+            let homNay = new Date().toISOString().split('T')[0];
+            document.getElementById("nhapNgay").value = homNay;
+            loadAdmin();
+        });
+    </script>
+</body>
+</html>

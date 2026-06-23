@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>MedReminder - Lịch Uống Thuốc</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-4 mb-5">
+        <h2 class="text-primary text-center mb-4 fw-bold">💊 Lịch Uống Thuốc</h2>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label class="fw-bold">📅 Xem lịch theo ngày:</label>
+                <input type="date" id="ngayXem" class="form-control shadow-sm">
+            </div>
+            <div class="col-md-8 text-end mt-4">
+                <a href="admin.html" class="btn btn-secondary">⚙️ Chuyển sang Admin</a>
+            </div>
+        </div>
+
+        <div id="loading" class="text-center text-warning fs-5" style="display: none;">Đang tải dữ liệu...</div>
+        
+        <div id="danhSach" class="row"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const API = "https://6a38f81f64a2d8269223305f.mockapi.io/schedules";
+
+        // Yêu cầu 1: Viết hàm có tham số và return (Hàm 1)
+        function layChuTrangThai(daUong) {
+            if (daUong === true) {
+                return "Đã uống ✅";
+            }
+            return "Chưa uống ⏳";
+        }
+
+        // Yêu cầu 1: Viết hàm có tham số và return (Hàm 2)
+        function layMauNut(daUong) {
+            if (daUong === true) {
+                return "btn-success";
+            }
+            return "btn-warning";
+        }
+
+        // Yêu cầu 2: Dùng Fetch API tải dữ liệu
+        function loadData() {
+            $("#loading").show(); // jQuery hiệu ứng
+            let ngayChon = document.getElementById("ngayXem").value;
+            
+            fetch(API)
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    $("#loading").hide();
+                    let html = "";
+                    let coDuLieu = false;
+                    
+                    // Vòng lặp cơ bản của sinh viên năm nhất
+                    for (let i = 0; i < data.length; i++) {
+                        let item = data[i];
+                        
+                        // Lọc để chỉ hiện thuốc của ngày được chọn
+                        if (item.date === ngayChon || item.date === "") {
+                            coDuLieu = true;
+                            let btnText = layChuTrangThai(item.isTaken);
+                            let btnClass = layMauNut(item.isTaken);
+                            let hinhAnh = item.image ? item.image : "https://via.placeholder.com/150?text=Thuoc";
+                            
+                            html += `
+                            <div class="col-md-4 mb-3">
+                                <div class="card shadow-sm h-100 border-start border-primary border-4">
+                                    <img src="${hinhAnh}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h5 class="text-primary">${item.medicationName}</h5>
+                                        <p class="mb-1">👤 Bệnh nhân: <b>${item.patientName}</b></p>
+                                        <p class="mb-1">💊 Liều: ${item.dosage} viên</p>
+                                        <p class="mb-3">⏰ Giờ: <b class="text-danger">${item.time}</b></p>
+                                        <button class="btn ${btnClass} w-100" onclick="doiTrangThai('${item.id}', ${item.isTaken})">
+                                            ${btnText}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }
+                    }
+                    
+                    if (coDuLieu === false) {
+                        html = "<div class='col-12 text-center mt-4'><h5>Không có lịch uống thuốc trong ngày này.</h5></div>";
+                    }
+                    
+                    // Yêu cầu 1: Thao tác DOM bằng JS thuần (innerHTML)
+                    document.getElementById("danhSach").innerHTML = html;
+                    $("#danhSach").hide().fadeIn(500); // jQuery hiệu ứng
+                });
+        }
+
+        // Cập nhật trạng thái (PUT API)
+        function doiTrangThai(id, trangThaiCu) {
+            fetch(API + "/" + id, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ isTaken: !trangThaiCu })
+            })
+            .then(function() {
+                loadData(); // Tải lại web
+            });
+        }
+
+        // Xử lý sự kiện bằng JS thuần (khi chọn ngày khác)
+        document.getElementById("ngayXem").addEventListener("change", function() {
+            loadData();
+        });
+
+        // Chạy khi vừa mở web
+        document.addEventListener("DOMContentLoaded", function() {
+            // Đặt mặc định là ngày hôm nay
+            let homNay = new Date().toISOString().split('T')[0];
+            document.getElementById("ngayXem").value = homNay;
+            loadData();
+        });
+    </script>
+</body>
+</html>
