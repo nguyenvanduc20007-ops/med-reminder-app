@@ -1,124 +1,190 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
-    <title>MedReminder - Lịch Uống Thuốc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedReminder - Hệ Thống Quản Lý Lịch Uống Thuốc</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
 </head>
-<body class="bg-light">
-    <div class="container mt-4 mb-5">
-        <h2 class="text-primary text-center mb-4 fw-bold">💊 Lịch Uống Thuốc</h2>
-        
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <label class="fw-bold">📅 Xem lịch theo ngày:</label>
-                <input type="date" id="ngayXem" class="form-control shadow-sm">
+
+<body>
+
+    <!-- Glassmorphic Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center text-primary fw-bold fs-4" href="index.html">
+                <i class="bi bi-capsule-therapeutic me-2 fs-3 text-secondary"></i> MedReminder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <div class="ms-auto d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                    <a href="admin.html" class="btn btn-primary-custom d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-lock-fill"></i> Trang Quản Trị (Admin)
+                    </a>
+                </div>
             </div>
-            <div class="col-md-8 text-end mt-4">
-                <a href="admin.html" class="btn btn-secondary">⚙️ Chuyển sang Admin</a>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Hero Section -->
+        <div class="hero-section text-center text-md-start">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <span class="badge bg-white/20 text-white mb-3 px-3 py-2 rounded-pill"><i
+                            class="bi bi-heart-pulse-fill text-danger me-1"></i> Đồng hành cùng sức khỏe gia đình
+                        bạn</span>
+                    <h1 class="fw-bold display-5 mb-2">Lịch Nhắc Uống Thuốc Mỗi Ngày</h1>
+                    <p class="lead mb-0 text-white-50">Xem lịch trình uống thuốc, đánh dấu đã uống và chăm sóc sức khỏe
+                        cho người thân một cách dễ dàng và khoa học.</p>
+                </div>
+                <div class="col-lg-4 text-center text-lg-end d-none d-lg-block">
+                    <i class="bi bi-prescription2 display-1 text-white-50 opacity-50"></i>
+                </div>
             </div>
         </div>
 
-        <div id="loading" class="text-center text-warning fs-5" style="display: none;">Đang tải dữ liệu...</div>
-        
+        <!-- Bộ lọc & Tìm kiếm -->
+        <div class="panel-filter p-4 mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-md-4">
+                    <label class="form-label-custom"><i class="bi bi-calendar-event me-1"></i> Xem lịch theo
+                        ngày</label>
+                    <input type="date" id="ngayXem" class="form-control form-control-custom w-100">
+                </div>
+                <div class="col-12 col-md-8">
+                    <label class="form-label-custom"><i class="bi bi-search me-1"></i> Tìm kiếm thuốc hoặc bệnh
+                        nhân</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"
+                            style="border-radius: var(--radius-sm) 0 0 var(--radius-sm); border: 1px solid #cbd5e1;"><i
+                                class="bi bi-search text-muted"></i></span>
+                        <input type="text" id="timKiem" class="form-control form-control-custom border-start-0 ps-0"
+                            placeholder="Nhập tên bệnh nhân hoặc tên thuốc cần tìm..."
+                            style="border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trạng thái Loading (Skeleton Screen) -->
+        <div id="loading" style="display: none;">
+            <div class="row">
+                <!-- Skeleton Card 1 -->
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div class="skeleton skeleton-img"></div>
+                        <div class="card-body p-4">
+                            <div class="skeleton skeleton-text title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text subtitle"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Skeleton Card 2 -->
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div class="skeleton skeleton-img"></div>
+                        <div class="card-body p-4">
+                            <div class="skeleton skeleton-text title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text subtitle"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Skeleton Card 3 -->
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div class="skeleton skeleton-img"></div>
+                        <div class="card-body p-4">
+                            <div class="skeleton skeleton-text title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text subtitle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danh sách Lịch uống thuốc -->
         <div id="danhSach" class="row"></div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        const API = "https://6a38f81f64a2d8269223305f.mockapi.io/schedules";
-
-        // Yêu cầu 1: Viết hàm có tham số và return (Hàm 1)
-        function layChuTrangThai(daUong) {
-            if (daUong === true) {
-                return "Đã uống ✅";
-            }
-            return "Chưa uống ⏳";
-        }
-
-        // Yêu cầu 1: Viết hàm có tham số và return (Hàm 2)
-        function layMauNut(daUong) {
-            if (daUong === true) {
-                return "btn-success";
-            }
-            return "btn-warning";
-        }
-
-        // Yêu cầu 2: Dùng Fetch API tải dữ liệu
-        function loadData() {
-            $("#loading").show(); // jQuery hiệu ứng
-            let ngayChon = document.getElementById("ngayXem").value;
-            
-            fetch(API)
-                .then(function(res) { return res.json(); })
-                .then(function(data) {
-                    $("#loading").hide();
-                    let html = "";
-                    let coDuLieu = false;
-                    
-                    // Vòng lặp cơ bản của sinh viên năm nhất
-                    for (let i = 0; i < data.length; i++) {
-                        let item = data[i];
-                        
-                        // Lọc để chỉ hiện thuốc của ngày được chọn
-                        if (item.date === ngayChon || item.date === "") {
-                            coDuLieu = true;
-                            let btnText = layChuTrangThai(item.isTaken);
-                            let btnClass = layMauNut(item.isTaken);
-                            let hinhAnh = item.image ? item.image : "https://via.placeholder.com/150?text=Thuoc";
-                            
-                            html += `
-                            <div class="col-md-4 mb-3">
-                                <div class="card shadow-sm h-100 border-start border-primary border-4">
-                                    <img src="${hinhAnh}" class="card-img-top" style="height: 150px; object-fit: cover;">
-                                    <div class="card-body">
-                                        <h5 class="text-primary">${item.medicationName}</h5>
-                                        <p class="mb-1">👤 Bệnh nhân: <b>${item.patientName}</b></p>
-                                        <p class="mb-1">💊 Liều: ${item.dosage} viên</p>
-                                        <p class="mb-3">⏰ Giờ: <b class="text-danger">${item.time}</b></p>
-                                        <button class="btn ${btnClass} w-100" onclick="doiTrangThai('${item.id}', ${item.isTaken})">
-                                            ${btnText}
-                                        </button>
-                                    </div>
+    <!-- Modal Chi Tiết Lịch Uống Thuốc -->
+    <div class="modal fade" id="modalChiTiet" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4 overflow-hidden">
+                <div class="modal-header border-0 bg-primary text-white p-4">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Thông tin thuốc</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <img id="modalDetailImg" src="" class="w-100" style="height: 220px; object-fit: cover;"
+                        alt="Hình ảnh thuốc">
+                    <div class="p-4">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="small text-secondary"><i class="bi bi-person me-1"></i> Bệnh nhân</div>
+                                <div class="fw-bold text-dark fs-6" id="modalPatientName">-</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small text-secondary"><i class="bi bi-capsules me-1"></i> Liều lượng</div>
+                                <div class="fw-bold text-dark fs-6" id="modalDosage">-</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small text-secondary"><i class="bi bi-clock me-1"></i> Giờ uống</div>
+                                <div class="fw-bold text-danger fs-6" id="modalTime">-</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small text-secondary"><i class="bi bi-calendar-check me-1"></i> Ngày uống
                                 </div>
-                            </div>`;
-                        }
-                    }
-                    
-                    if (coDuLieu === false) {
-                        html = "<div class='col-12 text-center mt-4'><h5>Không có lịch uống thuốc trong ngày này.</h5></div>";
-                    }
-                    
-                    // Yêu cầu 1: Thao tác DOM bằng JS thuần (innerHTML)
-                    document.getElementById("danhSach").innerHTML = html;
-                    $("#danhSach").hide().fadeIn(500); // jQuery hiệu ứng
-                });
-        }
+                                <div class="fw-bold text-dark fs-6" id="modalDate">-</div>
+                            </div>
+                            <div class="col-12">
+                                <hr class="my-2">
+                                <div class="small text-secondary"><i class="bi bi-heart-pulse me-1"></i> Trạng thái
+                                </div>
+                                <div class="fw-bold fs-6" id="modalStatus">-</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="small text-secondary"><i class="bi bi-file-earmark-text me-1"></i> Ghi chú
+                                    bác sĩ</div>
+                                <div class="bg-light p-3 rounded text-secondary small" id="modalNote">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-secondary w-100 py-2 rounded-3" data-bs-dismiss="modal">Đóng
+                        cửa sổ</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Cập nhật trạng thái (PUT API)
-        function doiTrangThai(id, trangThaiCu) {
-            fetch(API + "/" + id, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ isTaken: !trangThaiCu })
-            })
-            .then(function() {
-                loadData(); // Tải lại web
-            });
-        }
+    <!-- Toast Container chứa thông báo kết quả -->
+    <div class="toast-container"></div>
 
-        // Xử lý sự kiện bằng JS thuần (khi chọn ngày khác)
-        document.getElementById("ngayXem").addEventListener("change", function() {
-            loadData();
-        });
+    <!-- Thư viện bắt buộc: jQuery & Bootstrap 5 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        // Chạy khi vừa mở web
-        document.addEventListener("DOMContentLoaded", function() {
-            // Đặt mặc định là ngày hôm nay
-            let homNay = new Date().toISOString().split('T')[0];
-            document.getElementById("ngayXem").value = homNay;
-            loadData();
-        });
-    </script>
+    <!-- Các file JavaScript phân rã của dự án -->
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
 </body>
+
 </html>
