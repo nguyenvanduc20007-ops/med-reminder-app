@@ -1,237 +1,188 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
-    <title>MedReminder - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedReminder - Bảng Điều Khiển Quản Trị</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
 </head>
-<body class="bg-light">
-    <div class="container mt-4 mb-5">
-        <h2 class="text-danger text-center mb-4 fw-bold">⚙️ Bảng Điều Khiển Hệ Thống</h2>
-        <div class="text-end mb-3">
-            <a href="index.html" class="btn btn-secondary">⬅️ Trở về Trang Khách</a>
-        </div>
 
-        <div class="row">
+<body class="bg-light">
+
+    <!-- Glassmorphic Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center fw-bold fs-4 text-white" href="index.html">
+                <i class="bi bi-capsule-therapeutic me-2 fs-3 text-info"></i> MedReminder <span
+                    class="badge bg-danger ms-2" style="font-size: 0.65rem;">Admin</span>
+            </a>
+            <div class="ms-auto d-flex gap-2">
+                <button type="button" id="btnSeedData"
+                    class="btn btn-outline-info btn-sm d-flex align-items-center gap-2">
+                    <i class="bi bi-database-fill-add"></i> Tạo Dữ Liệu Mẫu
+                </button>
+                <a href="index.html" class="btn btn-outline-light btn-sm d-flex align-items-center gap-2">
+                    <i class="bi bi-arrow-left"></i> Trở về Trang Khách
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row g-4">
+            <!-- Cột trái: Form nhập liệu & Bảng quản lý -->
             <div class="col-lg-8">
-                <div class="card shadow-sm p-4 mb-4 bg-white">
-                    <h5 class="text-primary mb-3">Thêm/Sửa Lịch Thuốc</h5>
+                <!-- Card Form -->
+                <div class="card border-0 shadow-sm p-4 mb-4 rounded-4 bg-white">
+                    <h5 class="text-primary fw-bold mb-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar-plus-fill"></i> Thêm hoặc Sửa Lịch Thuốc
+                    </h5>
                     <form id="formNhap">
-                        <div class="row g-2">
+                        <div class="row g-3">
                             <div class="col-md-6">
-                                <label>Tên Bệnh Nhân</label>
-                                <input type="text" id="nhapBenhNhan" class="form-control">
-                                <small id="loiBN" class="text-danger" style="display: none;">Không được rỗng!</small>
+                                <label class="form-label-custom">Tên Bệnh Nhân <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="nhapBenhNhan" class="form-control form-control-custom"
+                                    placeholder="Nhập họ và tên bệnh nhân...">
+                                <small id="loiBenhNhan" class="error-inline ps-1" style="display: none;"></small>
                             </div>
                             <div class="col-md-6">
-                                <label>Tên Thuốc</label>
-                                <input type="text" id="nhapThuoc" class="form-control">
-                                <small id="loiThuoc" class="text-danger" style="display: none;">Không được rỗng!</small>
+                                <label class="form-label-custom">Tên Thuốc <span class="text-danger">*</span></label>
+                                <input type="text" id="nhapThuoc" class="form-control form-control-custom"
+                                    placeholder="Nhập tên thuốc uống...">
+                                <small id="loiThuoc" class="error-inline ps-1" style="display: none;"></small>
                             </div>
-                            <div class="col-md-4 mt-2">
-                                <label>Ngày Uống</label>
-                                <input type="date" id="nhapNgay" class="form-control">
-                                <small id="loiNgay" class="text-danger" style="display: none;">Chọn ngày!</small>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Ngày Uống <span class="text-danger">*</span></label>
+                                <input type="date" id="nhapNgay" class="form-control form-control-custom">
+                                <small id="loiNgay" class="error-inline ps-1" style="display: none;"></small>
                             </div>
-                            <div class="col-md-4 mt-2">
-                                <label>Giờ Uống</label>
-                                <input type="time" id="nhapGio" class="form-control">
-                                <small id="loiGio" class="text-danger" style="display: none;">Chọn giờ!</small>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Giờ Uống <span class="text-danger">*</span></label>
+                                <input type="time" id="nhapGio" class="form-control form-control-custom">
+                                <small id="loiGio" class="error-inline ps-1" style="display: none;"></small>
                             </div>
-                            <div class="col-md-4 mt-2">
-                                <label>Số lượng/Liều dùng</label>
-                                <input type="number" id="nhapLieu" class="form-control">
-                                <small id="loiLieu" class="text-danger" style="display: none;">Phải lớn hơn 0!</small>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Liều lượng (Viên) <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" id="nhapLieu" class="form-control form-control-custom"
+                                    placeholder="Ví dụ: 1, 2..." min="1">
+                                <small id="loiLieu" class="error-inline ps-1" style="display: none;"></small>
                             </div>
-                            <div class="col-12 mt-2">
-                                <label>Link ảnh (http...)</label>
-                                <input type="text" id="nhapAnh" class="form-control">
-                                <small id="loiAnh" class="text-danger" style="display: none;">Link không hợp lệ!</small>
+                            <div class="col-12">
+                                <label class="form-label-custom">Đường dẫn ảnh thuốc (Tùy chọn)</label>
+                                <input type="text" id="nhapAnh" class="form-control form-control-custom"
+                                    placeholder="http://... hoặc https://...">
+                                <small id="loiAnh" class="error-inline ps-1" style="display: none;"></small>
                             </div>
-                            <div class="col-12 mt-3 text-end">
-                                <button type="submit" id="btnLuu" class="btn btn-primary px-4">Lưu Lịch Thuốc</button>
+                            <div class="col-12 text-end d-flex gap-2 justify-content-end mt-4">
+                                <button type="button" id="btnHuySua" class="btn btn-light border px-4 py-2"
+                                    style="display: none;">Hủy Chỉnh Sửa</button>
+                                <button type="submit" id="btnLuu" class="btn btn-primary-custom px-4 py-2">Lưu Lịch
+                                    Thuốc</button>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <table class="table table-bordered bg-white text-center align-middle shadow-sm">
-                    <thead class="table-dark">
-                        <tr><th>Bệnh Nhân</th><th>Thuốc</th><th>Ngày / Giờ</th><th>Thao tác</th></tr>
-                    </thead>
-                    <tbody id="bangLich">
-                        <tr><td colspan="4">Đang tải...</td></tr>
-                    </tbody>
-                </table>
+                <!-- Danh sách Lịch uống (Bảng Table) -->
+                <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+                    <h5 class="text-primary fw-bold mb-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-table"></i> Danh Sách Lịch Trình Uống Thuốc
+                    </h5>
+                    <div class="table-responsive admin-table-wrapper">
+                        <table class="table admin-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th style="width: 35%;">Bệnh Nhân / Ngày</th>
+                                    <th style="width: 25%;">Tên Thuốc / Liều</th>
+                                    <th style="width: 15%;">Giờ</th>
+                                    <th style="width: 15%;">Trạng thái</th>
+                                    <th style="width: 10%;" class="text-end">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bangLich">
+                                <!-- Chèn từ JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Bộ phân trang (Pagination) -->
+                    <nav class="mt-4">
+                        <ul class="pagination justify-content-center" id="phanTrang">
+                            <!-- Chèn từ JS -->
+                        </ul>
+                    </nav>
+                </div>
             </div>
 
-            <div class="col-lg-4 mt-4 mt-lg-0">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-info text-white fw-bold">👥 Danh Sách Bệnh Nhân</div>
-                    <ul class="list-group list-group-flush" id="dsBenhNhan"></ul>
+            <!-- Cột phải: Bệnh nhân & Kho thuốc -->
+            <div class="col-lg-4">
+                <!-- Danh sách Bệnh Nhân -->
+                <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden mb-4">
+                    <div
+                        class="card-header bg-primary text-white py-3 fw-bold border-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-people-fill"></i> Danh Sách Bệnh Nhân
+                    </div>
+                    <ul class="list-group list-group-flush" id="dsBenhNhan">
+                        <!-- Chèn từ JS -->
+                    </ul>
                 </div>
-                
-                <div class="card shadow-sm">
-                    <div class="card-header bg-success text-white fw-bold">💊 Kho Thuốc </div>
-                    <ul class="list-group list-group-flush" id="dsKhoThuoc"></ul>
+
+                <!-- Kho Thuốc -->
+                <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+                    <div
+                        class="card-header bg-success text-white py-3 fw-bold border-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-prescription2"></i> Kho Thuốc Hệ Thống
+                    </div>
+                    <ul class="list-group list-group-flush" id="dsKhoThuoc">
+                        <!-- Chèn từ JS -->
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modal Xác Nhận Xóa của Bootstrap 5 -->
+    <div class="modal fade" id="modalXacNhanXoa" tabindex="-1" aria-labelledby="modalXoaTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header border-0 bg-danger text-white p-4">
+                    <h5 class="modal-title fw-bold" id="modalXoaTitle"><i class="bi bi-trash me-2"></i> Xác Nhận Xóa
+                        Lịch</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="modalXoaNoiDung">
+                    Bạn có chắc chắn muốn xóa lịch uống thuốc này không? Hành động này không thể hoàn tác.
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light border px-4 py-2" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="button" class="btn btn-danger px-4 py-2" id="btnDongYXoa">Đồng ý xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <!-- Thư viện bắt buộc: jQuery & Bootstrap 5 JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        // Có 2 resource đáp ứng yêu cầu
-        const API_LICH = "https://6a38f81f64a2d8269223305f.mockapi.io/schedules";
-        const API_THUOC = "https://6a38f81f64a2d8269223305f.mockapi.io/medications"; 
-        let idSua = null;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        // Yêu cầu 1: Hàm return (Hàm 3) - Kiểm tra lỗi
-        function kiemTraRong(chuoi) {
-            if (chuoi === "") return true;
-            return false;
-        }
-
-        function loadAdmin() {
-            // Tải API Lịch Uống
-            fetch(API_LICH)
-                .then(function(res) { return res.json(); })
-                .then(function(data) {
-                    let html = "";
-                    let mangBN = []; // Mảng để lưu tên bệnh nhân không trùng
-
-                    for(let i = 0; i < data.length; i++) {
-                        let item = data[i];
-                        
-                        // Lọc danh sách bệnh nhân
-                        if (item.patientName !== "" && mangBN.includes(item.patientName) === false) {
-                            mangBN.push(item.patientName);
-                        }
-
-                        html += `
-                        <tr>
-                            <td class="fw-bold">${item.patientName}</td>
-                            <td class="text-primary">${item.medicationName}</td>
-                            <td>${item.date} <br> <small class="text-danger">${item.time}</small></td>
-                            <td>
-                                <button class="btn btn-sm btn-warning nut-sua" data-id="${item.id}" data-bn="${item.patientName}" data-thuoc="${item.medicationName}" data-ngay="${item.date}" data-gio="${item.time}" data-lieu="${item.dosage}" data-anh="${item.image}">Sửa</button>
-                                <button class="btn btn-sm btn-danger nut-xoa" data-id="${item.id}">Xóa</button>
-                            </td>
-                        </tr>`;
-                    }
-                    document.getElementById("bangLich").innerHTML = html;
-
-                    // In danh sách bệnh nhân ra màn hình
-                    let htmlBN = "";
-                    for (let j = 0; j < mangBN.length; j++) {
-                        htmlBN += `<li class="list-group-item">👤 ${mangBN[j]}</li>`;
-                    }
-                    document.getElementById("dsBenhNhan").innerHTML = htmlBN;
-                });
-
-            // Tải API Kho Thuốc (Resource 2)
-            fetch(API_THUOC)
-                .then(function(res) { return res.json(); })
-                .then(function(data) {
-                    let htmlThuoc = "";
-                    for(let k = 0; k < data.length; k++) {
-                        htmlThuoc += `<li class="list-group-item">💊 ${data[k].name}</li>`;
-                    }
-                    document.getElementById("dsKhoThuoc").innerHTML = htmlThuoc;
-                });
-        }
-
-        // Yêu cầu 1: Bắt sự kiện form bằng JS Thuần
-        document.getElementById("formNhap").addEventListener("submit", function(e) {
-            e.preventDefault(); // Chặn tải lại trang
-            
-            let bn = document.getElementById("nhapBenhNhan").value;
-            let thuoc = document.getElementById("nhapThuoc").value;
-            let ngay = document.getElementById("nhapNgay").value;
-            let gio = document.getElementById("nhapGio").value;
-            let lieu = document.getElementById("nhapLieu").value;
-            let anh = document.getElementById("nhapAnh").value;
-            
-            let hopLe = true;
-            $("small").hide(); // Ẩn hết lỗi đi để check lại
-
-            // Yêu cầu 3: Bắt lỗi Validation (Dùng jQuery slideDown để hiện lỗi)
-            if (kiemTraRong(bn)) { $("#loiBN").slideDown(); hopLe = false; }
-            if (kiemTraRong(thuoc)) { $("#loiThuoc").slideDown(); hopLe = false; }
-            if (kiemTraRong(ngay)) { $("#loiNgay").slideDown(); hopLe = false; }
-            if (kiemTraRong(gio)) { $("#loiGio").slideDown(); hopLe = false; }
-            if (Number(lieu) <= 0 || kiemTraRong(lieu)) { $("#loiLieu").slideDown(); hopLe = false; }
-            if (anh !== "" && anh.indexOf("http") !== 0) { $("#loiAnh").slideDown(); hopLe = false; }
-
-            if (hopLe === false) return; // Nếu có lỗi thì dừng lại
-
-            let duLieuLuu = {
-                patientName: bn,
-                medicationName: thuoc,
-                date: ngay,
-                time: gio,
-                dosage: Number(lieu),
-                image: anh,
-                isTaken: false
-            };
-
-            let kieuGoi = "POST";
-            let linkGoi = API_LICH;
-
-            // Nếu đang sửa thì đổi sang PUT
-            if (idSua !== null) {
-                kieuGoi = "PUT";
-                linkGoi = API_LICH + "/" + idSua;
-            }
-
-            fetch(linkGoi, {
-                method: kieuGoi,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(duLieuLuu)
-            })
-            .then(function() {
-                alert("Lưu dữ liệu thành công!");
-                document.getElementById("formNhap").reset(); // Yêu cầu 3: Reset form sau khi lưu
-                document.getElementById("btnLuu").innerText = "Lưu Lịch Thuốc";
-                idSua = null;
-                loadAdmin();
-            });
-        });
-
-        // Bấm nút Sửa
-        $(document).on("click", ".nut-sua", function() {
-            idSua = $(this).attr("data-id");
-            $("#nhapBenhNhan").val($(this).attr("data-bn"));
-            $("#nhapThuoc").val($(this).attr("data-thuoc"));
-            $("#nhapNgay").val($(this).attr("data-ngay"));
-            $("#nhapGio").val($(this).attr("data-gio"));
-            $("#nhapLieu").val($(this).attr("data-lieu"));
-            $("#nhapAnh").val($(this).attr("data-anh"));
-            $("#btnLuu").text("Cập nhật");
-        });
-
-        // Yêu cầu 4: Dùng jQuery $.ajax để Xóa
-        $(document).on("click", ".nut-xoa", function() {
-            let idMuonXoa = $(this).attr("data-id");
-            
-            if (confirm("Chắc chắn xóa lịch này chứ?")) {
-                $.ajax({
-                    url: API_LICH + "/" + idMuonXoa,
-                    type: "DELETE",
-                    success: function() {
-                        loadAdmin();
-                    }
-                });
-            }
-        });
-
-        // Chạy khi mở web
-        document.addEventListener("DOMContentLoaded", function() {
-            // Đặt ô ngày mặc định là hôm nay
-            let homNay = new Date().toISOString().split('T')[0];
-            document.getElementById("nhapNgay").value = homNay;
-            loadAdmin();
-        });
-    </script>
+    <!-- Các file JavaScript phân rã -->
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/admin.js"></script>
 </body>
+
 </html>
